@@ -9,8 +9,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.jwt import decode_token
 from app.db import get_session
 from app.models import User
-from app.repositories import TokenRepository, UserRepository
-from app.services import AuthService, UserService
+from app.repositories import CompanyRepository, TokenRepository, UserRepository
+from app.services import AuthService, CompanyService, UserService
 
 SessionDep = Annotated[AsyncSession, Depends(get_session)]
 
@@ -61,4 +61,14 @@ async def get_current_user(token: TokenDep, session: SessionDep) -> User:
 CurrentUserDep = Annotated[
     User,
     Depends(get_current_user),
+]
+
+def get_company_service(session: SessionDep) -> CompanyService:
+    return CompanyService(
+        CompanyRepository(session),
+    )
+
+CompanyServiceDep = Annotated[
+    CompanyService,
+    Depends(get_company_service),
 ]
