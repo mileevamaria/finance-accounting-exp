@@ -32,7 +32,7 @@ class Account(Base, UUIDMixin):
     )
     name: Mapped[str] = mapped_column(String(255))
     type: Mapped[AccountType] = mapped_column(SQLEnum(AccountType))
-    currency: Mapped[str] = mapped_column(SQLEnum(AccountCurrency))
+    currency: Mapped[AccountCurrency] = mapped_column(SQLEnum(AccountCurrency))
     opening_balance: Mapped[Decimal] = mapped_column(
         Numeric(15, 2), default=Decimal('0.00'),
     )

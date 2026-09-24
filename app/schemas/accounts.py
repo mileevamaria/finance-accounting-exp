@@ -5,11 +5,7 @@ from uuid import UUID
 from pydantic import BaseModel, ConfigDict, Field
 
 from app.models.accounts import AccountCurrency, AccountType
-
-Money = Annotated[
-    Decimal,
-    Field(max_digits=15, decimal_places=2),
-]
+from app.schemas.types import Money
 
 
 class AccountCreate(BaseModel):

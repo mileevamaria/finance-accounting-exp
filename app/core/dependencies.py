@@ -11,18 +11,25 @@ from app.db import get_session
 from app.models import User
 from app.repositories import (
     AccountRepository,
+    CategoryGroupRepository,
+    CategoryRepository,
     CompanyRepository,
     TokenRepository,
+    TransactionRepository,
     UserRepository,
 )
 from app.services import (
     AccountService,
     AuthService,
+    CategoryGroupService,
+    CategoryService,
     CompanyService,
+    TransactionService,
     UserService,
 )
 
 SessionDep = Annotated[AsyncSession, Depends(get_session)]
+
 
 def get_user_service(session: SessionDep) -> UserService:
     return UserService(repo=UserRepository(session))
@@ -31,6 +38,7 @@ UserServiceDep = Annotated[
     UserService,
     Depends(get_user_service),
 ]
+
 
 def get_auth_service(session: SessionDep) -> AuthService:
     return AuthService(
@@ -45,6 +53,7 @@ AuthServiceDep = Annotated[
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/auth/login')
 TokenDep = Annotated[str, Depends(oauth2_scheme)]
+
 
 async def get_current_user(token: TokenDep, session: SessionDep) -> User:
     credentials_exception = HTTPException(
@@ -73,6 +82,7 @@ CurrentUserDep = Annotated[
     Depends(get_current_user),
 ]
 
+
 def get_account_service(session: SessionDep) -> AccountService:
     return AccountService(
         account_repo=AccountRepository(session),
@@ -84,6 +94,7 @@ AccountServiceDep = Annotated[
     Depends(get_account_service),
 ]
 
+
 def get_company_service(session: SessionDep) -> CompanyService:
     return CompanyService(
         CompanyRepository(session),
@@ -92,4 +103,47 @@ def get_company_service(session: SessionDep) -> CompanyService:
 CompanyServiceDep = Annotated[
     CompanyService,
     Depends(get_company_service),
+]
+
+
+def get_category_group_service(session: SessionDep) -> CategoryGroupService:
+    return CategoryGroupService(
+        group_repo=CategoryGroupRepository(session),
+        company_repo=CompanyRepository(session),
+    )
+
+CategoryGroupServiceDep = Annotated[
+    CategoryGroupService,
+    Depends(get_category_group_service),
+]
+
+
+def get_category_service(
+    session: SessionDep,
+    group_service: CategoryGroupServiceDep,
+) -> CategoryService:
+    return CategoryService(
+        category_repo=CategoryRepository(session),
+        group_service=group_service,
+    )
+
+CategoryServiceDep = Annotated[
+    CategoryService,
+    Depends(get_category_service),
+]
+
+
+def get_transaction_service(
+    session: SessionDep,
+    account_service: AccountServiceDep
+) -> TransactionService:
+    return TransactionService(
+        transaction_repo=TransactionRepository(session),
+        category_repo=CategoryRepository(session),
+        account_service=account_service,
+    )
+        
+TransactionServiceDep = Annotated[
+    TransactionService,
+    Depends(get_transaction_service),
 ]
