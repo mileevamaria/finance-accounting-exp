@@ -28,7 +28,7 @@ class User(Base, SoftDeleteMixin, TimestampMixin):
         cascade='all, delete-orphan',
     )
 
-    companies: Mapped[list["Company"]] = relationship(
+    companies: Mapped[list['Company']] = relationship(
         back_populates='owner',
         cascade='all, delete-orphan',
     )

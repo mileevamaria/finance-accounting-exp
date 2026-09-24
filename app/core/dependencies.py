@@ -9,8 +9,18 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.jwt import decode_token
 from app.db import get_session
 from app.models import User
-from app.repositories import CompanyRepository, TokenRepository, UserRepository
-from app.services import AuthService, CompanyService, UserService
+from app.repositories import (
+    AccountRepository,
+    CompanyRepository,
+    TokenRepository,
+    UserRepository,
+)
+from app.services import (
+    AccountService,
+    AuthService,
+    CompanyService,
+    UserService,
+)
 
 SessionDep = Annotated[AsyncSession, Depends(get_session)]
 
@@ -33,21 +43,21 @@ AuthServiceDep = Annotated[
     Depends(get_auth_service),
 ]
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/auth/login')
 TokenDep = Annotated[str, Depends(oauth2_scheme)]
 
 async def get_current_user(token: TokenDep, session: SessionDep) -> User:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
+        detail='Could not validate credentials',
+        headers={'WWW-Authenticate': 'Bearer'},
     )
 
     try:
         payload = decode_token(token)
-        if payload.get("type") != "access":
+        if payload.get('type') != 'access':
             raise credentials_exception
-        user_id = UUID(payload["sub"])
+        user_id = UUID(payload['sub'])
 
     except (InvalidTokenError, ValueError, KeyError):
         raise credentials_exception
@@ -61,6 +71,17 @@ async def get_current_user(token: TokenDep, session: SessionDep) -> User:
 CurrentUserDep = Annotated[
     User,
     Depends(get_current_user),
+]
+
+def get_account_service(session: SessionDep) -> AccountService:
+    return AccountService(
+        account_repo=AccountRepository(session),
+        company_repo=CompanyRepository(session),
+    )
+
+AccountServiceDep = Annotated[
+    AccountService,
+    Depends(get_account_service),
 ]
 
 def get_company_service(session: SessionDep) -> CompanyService:

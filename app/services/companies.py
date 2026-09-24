@@ -1,7 +1,7 @@
 from collections.abc import Sequence
 from uuid import UUID
 
-from fastapi import HTTPException
+from fastapi import HTTPException, status
 
 from app.models import Company
 from app.repositories import CompanyRepository
@@ -26,13 +26,19 @@ class CompanyService:
     ) -> Company | None:
         company = await self.repo.get_by_id(obj_id=company_id)
         if not company or company.owner_id != owner_id:
-            raise HTTPException(status_code=404, detail='Company not found')
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, 
+                detail='Company not found',
+            )
         return company
 
     async def update(self, company_id: UUID, data: CompanyUpdate) -> Company:
         company = await self.repo.get_by_id(company_id)
         if not company:
-            raise HTTPException(status_code=404, detail='Company not found')
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, 
+                detail='Company not found',
+            )
         
         company_data = data.model_dump(exclude_unset=True)
         for field, value in company_data.items():

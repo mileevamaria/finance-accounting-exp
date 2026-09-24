@@ -8,7 +8,7 @@ from app.db.base import Base
 from app.models.mixins import SoftDeleteMixin, UUIDMixin
 
 if TYPE_CHECKING:
-    from app.models.users import User
+    from app.models import Account, User
 
 
 class Company(Base, SoftDeleteMixin, UUIDMixin):
@@ -28,4 +28,9 @@ class Company(Base, SoftDeleteMixin, UUIDMixin):
 
     owner: Mapped['User'] = relationship(
         back_populates='companies',
+    )
+
+    accounts: Mapped[list['Account']] = relationship(
+        back_populates='company',
+        cascade='all, delete-orphan',
     )

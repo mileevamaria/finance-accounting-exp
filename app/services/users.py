@@ -22,7 +22,7 @@ class UserService:
         return await self._get_user_from_db(user_id=user_id)
 
     async def create(self, data: UserCreate) -> User:
-        user_data = data.model_dump(exclude={"password"})
+        user_data = data.model_dump(exclude={'password'})
         user_data['hashed_password'] = hash_password(data.password)
         return await self.repo.create(User(**user_data))
 
@@ -32,7 +32,7 @@ class UserService:
         if 'email' in update_data:
             existing_user = await self.repo.get_by_email(update_data['email'])
             if existing_user and existing_user.id != user.id:
-                raise HTTPException(status_code=400, detail="Email already exists")
+                raise HTTPException(status_code=400, detail='Email already exists')
 
         for field, value in update_data.items():
             setattr(user, field, value)

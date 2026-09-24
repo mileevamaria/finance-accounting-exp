@@ -18,7 +18,6 @@ from app.models import Token, User
 from app.repositories import TokenRepository, UserRepository
 from app.schemas.auth import AuthUser, TokenRefresh
 
-
 InvalidCredentialsException = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
     detail='Invalid credentials',
@@ -79,7 +78,10 @@ class AuthService:
         user_id = UUID(payload['sub'])
         user = await self.user_repo.get_by_id(user_id)
         if user is None:
-            raise HTTPException(status_code=404, detail='User not found')
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, 
+                detail='User not found',
+            )
 
         token_id = UUID(payload['jti'])
         stored = await self.token_repo.get_active_by_id(token_id)
