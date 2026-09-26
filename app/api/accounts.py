@@ -9,6 +9,7 @@ from app.core.dependencies import (
 from app.schemas.accounts import (
     AccountCreate,
     AccountResponse,
+    AccountResponseWithBalance,
     AccountUpdate,
 )
 
@@ -30,7 +31,6 @@ async def create_account(
         company_id,
         data,
     )
-
     return AccountResponse.model_validate(account)
 
 
@@ -40,14 +40,22 @@ async def get_accounts(
     current_user: CurrentUserDep,
     service: AccountServiceDep,
 ):
-    accounts = await service.get_company_accounts(
+    accounts = await service.get_all(
         current_user.id,
         company_id,
     )
 
     return [
-        AccountResponse.model_validate(account)
-        for account in accounts
+        AccountResponseWithBalance(
+            id=account.id,
+            company_id=account.company_id,
+            name=account.name,
+            type=account.type,
+            currency=account.currency,
+            opening_balance=account.opening_balance,
+            balance=balance,
+        )
+        for account, balance in accounts
     ]
 
 
@@ -58,13 +66,21 @@ async def get_account(
     current_user: CurrentUserDep,
     service: AccountServiceDep,
 ):
-    account = await service.get_account(
+    account, balance = await service.get(
         current_user.id,
         company_id,
         account_id,
     )
 
-    return AccountResponse.model_validate(account)
+    return AccountResponseWithBalance(
+        id=account.id,
+        company_id=account.company_id,
+        name=account.name,
+        type=account.type,
+        currency=account.currency,
+        opening_balance=account.opening_balance,
+        balance=balance,
+    )
 
 
 @router.patch('/{account_id}', response_model=AccountResponse)
@@ -81,13 +97,12 @@ async def update_account(
         account_id,
         data,
     )
-
     return AccountResponse.model_validate(account)
 
 
 @router.delete('{account_id}', status_code=status.HTTP_204_NO_CONTENT)
-async def delete_category(
-    category_id: UUID,
+async def delete_account(
+    account_id: UUID,
     service: AccountServiceDep,
 ):
-    await service.delete(category_id)
+    await service.delete(account_id)

@@ -26,23 +26,23 @@ async def create_company(
 
 
 @router.get('', response_model=list[CompanyResponse])
-async def get_my_companies(
+async def get_all(
     current_user: CurrentUserDep,
     service: CompanyServiceDep,
 ):
-    companies = await service.get_my_companies(current_user.id)
+    companies = await service.get_all(current_user.id)
     return [
         CompanyResponse.model_validate(company)
         for company in companies
     ]
 
 @router.get('/{company_id}', response_model=CompanyResponse)
-async def get_company(
+async def get
     company_id: UUID,
     current_user: CurrentUserDep,
     service: CompanyServiceDep,
 ):
-    company = await service.get_company(company_id, current_user.id)
+    company = await service.getcompany_id, current_user.id)
     return CompanyResponse.model_validate(company)
 
 

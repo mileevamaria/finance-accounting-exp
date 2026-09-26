@@ -44,7 +44,7 @@ async def get_groups(
     current_user: CurrentUserDep,
     service: CategoryGroupServiceDep,
 ):
-    groups = await service.get_company_groups(
+    groups = await service.get_all(
         company_id=company_id,
         owner_id=current_user.id,
     )
@@ -128,7 +128,7 @@ async def get_categories(
     current_user: CurrentUserDep,
     service: CategoryServiceDep,
 ):
-    categories = await service.get_company_categories(
+    categories = await service.get_all(
         company_id=company_id,
         owner_id=current_user.id,
     )
@@ -143,13 +143,13 @@ async def get_categories(
     '/categories/{category_id}',
     response_model=CategoryResponse,
 )
-async def get_category(
+async def get(
     company_id: UUID,
     category_id: UUID,
     current_user: CurrentUserDep,
     service: CategoryServiceDep,
 ):
-    category = await service.get_category(
+    category = await service.get(
         category_id=category_id,
         company_id=company_id,
         owner_id=current_user.id,

@@ -108,7 +108,7 @@ CompanyServiceDep = Annotated[
 ]
 
 
-def get_category_group_service(session: SessionDep) -> CategoryGroupService:
+def get_group_service(session: SessionDep) -> CategoryGroupService:
     return CategoryGroupService(
         group_repo=CategoryGroupRepository(session),
         company_repo=CompanyRepository(session),
@@ -116,11 +116,11 @@ def get_category_group_service(session: SessionDep) -> CategoryGroupService:
 
 CategoryGroupServiceDep = Annotated[
     CategoryGroupService,
-    Depends(get_category_group_service),
+    Depends(get_group_service),
 ]
 
 
-def get_category_service(
+def get_service(
     session: SessionDep,
     group_service: CategoryGroupServiceDep,
 ) -> CategoryService:
@@ -131,7 +131,7 @@ def get_category_service(
 
 CategoryServiceDep = Annotated[
     CategoryService,
-    Depends(get_category_service),
+    Depends(get_service),
 ]
 
 

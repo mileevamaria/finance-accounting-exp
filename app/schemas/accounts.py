@@ -1,5 +1,4 @@
 from decimal import Decimal
-from typing import Annotated
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -29,3 +28,7 @@ class AccountResponse(BaseModel):
     opening_balance: Money
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class AccountResponseWithBalance(AccountResponse):
+    balance: Money

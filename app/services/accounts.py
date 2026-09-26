@@ -1,4 +1,4 @@
-from collections.abc import Sequence
+from decimal import Decimal
 from uuid import UUID
 
 from fastapi import HTTPException, status
@@ -42,30 +42,36 @@ class AccountService:
         account = Account(company_id=company_id, **data.model_dump())
         return await self.account_repo.create(account)
 
-    async def get_company_accounts(
+    async def get_all(
         self, 
         company_id: UUID, 
         owner_id: UUID,
-    ) -> Sequence[Account]:
+    ) -> list[tuple[Account, Decimal]]:
         await self.get_company_or_404(company_id, owner_id)
-        return await self.account_repo.get_by_company(company_id)
+        accounts = await self.account_repo.get_with_balances(company_id)
+        return [(account, balance) for account, balance in accounts]
 
-    async def get_account(
+    async def get(
         self, 
         account_id: UUID,
         company_id: UUID, 
         owner_id: UUID,
-    ) -> Account:
+    ) -> tuple[Account, Decimal]:
         await self.get_company_or_404(company_id, owner_id)
 
-        account = await self.account_repo.get_by_id(obj_id=account_id)
+        row = await self.account_repo.get_with_balance(account_id)
+        if row is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, 
+                detail='Account not found',
+            )
+        account, balance = row
         if account is None or account.company_id != company_id:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, 
                 detail='Account not found',
             )
-
-        return account
+        return account, balance
 
     async def update(
         self,
@@ -74,7 +80,7 @@ class AccountService:
         account_id: UUID,
         data: AccountUpdate,
     ) -> Account:
-        account = await self.get_account(
+        account, _ = await self.get(
             owner_id=owner_id,
             company_id=company_id,
             account_id=account_id,

@@ -36,7 +36,7 @@ class TransactionService:
         owner_id: UUID,
         data: TransactionCreate,
     ) -> Transaction:
-        account = await self.account_service.get_account(
+        account = await self.account_service.get(
             account_id=account_id,
             company_id=company_id,
             owner_id=owner_id,
@@ -76,7 +76,7 @@ class TransactionService:
         account_id: UUID,
         owner_id: UUID,
     ) -> Sequence[Transaction]:
-        await self.account_service.get_account(
+        await self.account_service.get(
             account_id=account_id,
             company_id=company_id,
             owner_id=owner_id,
@@ -91,7 +91,7 @@ class TransactionService:
         account_id: UUID,
         owner_id: UUID,
     ) -> Transaction:
-        await self.account_service.get_account(
+        await self.account_service.get(
             account_id=account_id,
             company_id=company_id,
             owner_id=owner_id,

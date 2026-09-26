@@ -16,10 +16,10 @@ class CompanyService:
         company = Company(owner_id=owner_id, **data.model_dump())
         return await self.repo.create(company)
 
-    async def get_my_companies(self, owner_id: UUID) -> Sequence[Company]:
+    async def get_all(self, owner_id: UUID) -> Sequence[Company]:
         return await self.repo.get_by_owner(owner_id)
 
-    async def get_company(
+    async def get(
         self, 
         company_id: UUID, 
         owner_id: UUID,

@@ -56,7 +56,7 @@ class CategoryGroupService:
 
         return await self.group_repo.create(group)
 
-    async def get_company_groups(
+    async def get_all(
         self,
         company_id: UUID,
         owner_id: UUID,
@@ -135,7 +135,7 @@ class CategoryService:
 
         return await self.category_repo.create(category)
 
-    async def get_company_categories(
+    async def get_all(
         self,
         company_id: UUID,
         owner_id: UUID,
@@ -147,7 +147,7 @@ class CategoryService:
 
         return await self.category_repo.get_by_company(company_id)
 
-    async def get_category(
+    async def get(
         self,
         category_id: UUID,
         company_id: UUID,
@@ -175,7 +175,7 @@ class CategoryService:
         owner_id: UUID,
         data: CategoryUpdate,
     ) -> Category:
-        category = await self.get_category(
+        category = await self.get(
             category_id=category_id,
             company_id=company_id,
             owner_id=owner_id,
