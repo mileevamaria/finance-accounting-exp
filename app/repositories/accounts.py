@@ -32,8 +32,7 @@ class AccountRepository(BaseRepository[Account]):
         result = await self.session.execute(query)
         row = result.one_or_none()
         if row is None:
-            return None
-
+            return
         account, balance = row
         return account, balance
 

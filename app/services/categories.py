@@ -7,7 +7,6 @@ from app.models import Category, CategoryGroup
 from app.repositories import (
     CategoryGroupRepository,
     CategoryRepository,
-    CompanyRepository,
 )
 from app.schemas.categories import (
     CategoryCreate,

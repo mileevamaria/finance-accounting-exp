@@ -36,7 +36,7 @@ class TransactionService:
         owner_id: UUID,
         data: TransactionCreate,
     ) -> Transaction:
-        account = await self.account_service.get(
+        account, _ = await self.account_service.get(
             account_id=account_id,
             company_id=company_id,
             owner_id=owner_id,
@@ -59,7 +59,7 @@ class TransactionService:
                 )
 
         transaction = Transaction(
-            account_id=account_id,
+            account_id=account.id,
             category_id=category.id,
             project_id=data.project_id,
             amount=data.amount,
