@@ -91,6 +91,12 @@ async def update_project(
 )
 async def delete_project(
     project_id: UUID,
+    company_id: UUID,
+    current_user: CurrentUserDep,
     service: ProjectServiceDep,
 ) -> None:
-    await service.delete(project_id)
+    await service.delete(
+        project_id=project_id,
+        company_id=company_id,
+        owner_id=current_user.id,
+    )

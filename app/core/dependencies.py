@@ -15,6 +15,7 @@ from app.repositories import (
     CategoryRepository,
     CompanyRepository,
     ProjectRepository,
+    ReportRepository,
     TokenRepository,
     TransactionRepository,
     UserRepository,
@@ -26,6 +27,7 @@ from app.services import (
     CategoryService,
     CompanyService,
     ProjectService,
+    ReportService,
     TransactionService,
     UserService,
 )
@@ -85,18 +87,6 @@ CurrentUserDep = Annotated[
 ]
 
 
-def get_account_service(session: SessionDep) -> AccountService:
-    return AccountService(
-        account_repo=AccountRepository(session),
-        company_repo=CompanyRepository(session),
-    )
-
-AccountServiceDep = Annotated[
-    AccountService,
-    Depends(get_account_service),
-]
-
-
 def get_company_service(session: SessionDep) -> CompanyService:
     return CompanyService(
         CompanyRepository(session),
@@ -108,10 +98,28 @@ CompanyServiceDep = Annotated[
 ]
 
 
-def get_group_service(session: SessionDep) -> CategoryGroupService:
+def get_account_service(
+    session: SessionDep,
+    company_service: CompanyServiceDep,
+) -> AccountService:
+    return AccountService(
+        account_repo=AccountRepository(session),
+        company_repo=CompanyRepository(session),
+        company_service=company_service,
+    )
+
+AccountServiceDep = Annotated[
+    AccountService,
+    Depends(get_account_service),
+]
+
+def get_group_service(
+    session: SessionDep,
+    company_service: CompanyServiceDep,
+) -> CategoryGroupService:
     return CategoryGroupService(
         group_repo=CategoryGroupRepository(session),
-        company_repo=CompanyRepository(session),
+        company_service=company_service,
     )
 
 CategoryGroupServiceDep = Annotated[
@@ -120,18 +128,20 @@ CategoryGroupServiceDep = Annotated[
 ]
 
 
-def get_service(
+def get_category_service(
     session: SessionDep,
     group_service: CategoryGroupServiceDep,
+    company_service: CompanyServiceDep,
 ) -> CategoryService:
     return CategoryService(
         category_repo=CategoryRepository(session),
         group_service=group_service,
+        company_service=company_service,
     )
 
 CategoryServiceDep = Annotated[
     CategoryService,
-    Depends(get_service),
+    Depends(get_category_service),
 ]
 
 
@@ -152,13 +162,32 @@ TransactionServiceDep = Annotated[
 ]
 
 
-def get_project_service(session: SessionDep) -> ProjectService:
+def get_project_service(
+    session: SessionDep,
+    company_service: CompanyServiceDep,
+) -> ProjectService:
     return ProjectService(
         project_repo=ProjectRepository(session),
         company_repo=CompanyRepository(session),
+        company_service=company_service
     )
         
 ProjectServiceDep = Annotated[
     ProjectService,
     Depends(get_project_service),
+]
+
+
+def get_report_service(
+    session: SessionDep,
+    company_service: CompanyServiceDep,
+) -> ReportService:
+    return ReportService(
+        report_repo=ReportRepository(session),
+        company_service=company_service
+    )
+        
+ReportServiceDep = Annotated[
+    ReportService,
+    Depends(get_report_service),
 ]

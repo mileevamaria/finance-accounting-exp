@@ -102,6 +102,14 @@ async def update_transaction(
 @router.delete('/{transaction_id}', status_code=status.HTTP_204_NO_CONTENT)
 async def delete_transaction(
     transaction_id: UUID,
+    account_id: UUID,
+    company_id: UUID,
+    current_user: CurrentUserDep,
     service: TransactionServiceDep,
 ):
-    await service.delete(transaction_id)
+    await service.delete(
+        transaction_id=transaction_id,
+        account_id=account_id,
+        company_id=company_id,
+        owner_id=current_user.id,
+    )

@@ -7,9 +7,8 @@
 - [ ] Dummy hash
 - [ ] Makefile
 - [ ] Tests, coverage, actions
-- [ ] Statements: 
-    - [ ] P&L by categories
-    - [ ] P&L by groups
-    - [ ] P&L by projects
-    - [ ] CashFlow by month
-    - [ ] Revenues & Expenses by counterparty
+- [x] Statements: 
+    - [x] P&L by categories
+    - [x] P&L by groups
+    - [x] P&L by projects
+    - [x] CashFlow by month

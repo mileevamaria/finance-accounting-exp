@@ -103,6 +103,12 @@ async def update_account(
 @router.delete('{account_id}', status_code=status.HTTP_204_NO_CONTENT)
 async def delete_account(
     account_id: UUID,
+    company_id: UUID,
+    current_user: CurrentUserDep,
     service: AccountServiceDep,
 ):
-    await service.delete(account_id)
+    await service.delete(
+        account_id=account_id,
+        company_id=company_id,
+        owner_id=current_user.id,
+    )

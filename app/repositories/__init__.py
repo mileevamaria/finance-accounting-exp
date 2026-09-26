@@ -5,6 +5,7 @@ from .categories import CategoryGroupRepository, CategoryRepository
 from .companies import CompanyRepository
 from .mixins import SoftDeletionMixin
 from .projects import ProjectRepository
+from .reports import ReportRepository
 from .transactions import TransactionRepository
 from .users import UserRepository
 
@@ -15,6 +16,7 @@ __all__ = [
     'CategoryRepository',
     'CompanyRepository',
     'ProjectRepository',
+    'ReportRepository',
     'SoftDeletionMixin',
     'TokenRepository',
     'TransactionRepository',

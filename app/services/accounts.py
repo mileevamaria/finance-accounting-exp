@@ -3,9 +3,10 @@ from uuid import UUID
 
 from fastapi import HTTPException, status
 
-from app.models import Account, Company
+from app.models import Account
 from app.repositories import AccountRepository, CompanyRepository
 from app.schemas.accounts import AccountCreate, AccountUpdate
+from app.services import CompanyService
 
 
 class AccountService:
@@ -13,23 +14,11 @@ class AccountService:
         self, 
         account_repo: AccountRepository,
         company_repo: CompanyRepository,
+        company_service: CompanyService
     ):
         self.account_repo = account_repo
         self.company_repo = company_repo
-
-    async def get_company_or_404(
-        self,
-        company_id: UUID,
-        owner_id: UUID,
-    ) -> Company:
-        company = await self.company_repo.get_by_id(obj_id=company_id)
-        if company is None or company.owner_id != owner_id:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail='Company not found',
-            )
-
-        return company
+        self.company_service = company_service
 
     async def create(
         self, 
@@ -37,7 +26,7 @@ class AccountService:
         owner_id: UUID, 
         data: AccountCreate,
     ) -> Account:
-        await self.get_company_or_404(company_id, owner_id)
+        await self.company_service.get_company_or_404(company_id, owner_id)
 
         account = Account(company_id=company_id, **data.model_dump())
         return await self.account_repo.create(account)
@@ -47,7 +36,7 @@ class AccountService:
         company_id: UUID, 
         owner_id: UUID,
     ) -> list[tuple[Account, Decimal]]:
-        await self.get_company_or_404(company_id, owner_id)
+        await self.company_service.get_company_or_404(company_id, owner_id)
         accounts = await self.account_repo.get_with_balances(company_id)
         return [(account, balance) for account, balance in accounts]
 
@@ -57,7 +46,7 @@ class AccountService:
         company_id: UUID, 
         owner_id: UUID,
     ) -> tuple[Account, Decimal]:
-        await self.get_company_or_404(company_id, owner_id)
+        await self.company_service.get_company_or_404(company_id, owner_id)
 
         row = await self.account_repo.get_with_balance(account_id)
         if row is None:
@@ -91,5 +80,15 @@ class AccountService:
             setattr(account, field, value)
         return await self.account_repo.update(account)
 
-    async def delete(self, obj_id: UUID) -> None:
-        await self.account_repo.delete(obj_id)
+    async def delete(
+        self, 
+        account_id: UUID,
+        company_id: UUID,
+        owner_id: UUID,
+    ) -> None:
+        account, _ = await self.get(
+            account_id=account_id,
+            company_id=company_id,
+            owner_id=owner_id,
+        )
+        await self.account_repo.delete(account.id)

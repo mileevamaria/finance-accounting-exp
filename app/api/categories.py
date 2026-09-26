@@ -65,7 +65,7 @@ async def get_group(
     current_user: CurrentUserDep,
     service: CategoryGroupServiceDep,
 ):
-    group = await service.get_group(
+    group = await service.get(
         group_id=group_id,
         company_id=company_id,
         owner_id=current_user.id,
@@ -101,9 +101,15 @@ async def update_group(
 )
 async def delete_group(
     group_id: UUID,
+    company_id: UUID,
+    current_user: CurrentUserDep,
     service: CategoryGroupServiceDep,
 ):
-    await service.delete(group_id)
+    await service.delete(
+        group_id=group_id,
+        company_id=company_id,
+        owner_id=current_user.id,
+    )
 
 
 @router.post('/categories', response_model=CategoryResponse)
@@ -185,6 +191,12 @@ async def update_category(
 )
 async def delete_category(
     category_id: UUID,
-    service: CategoryGroupServiceDep,
+    company_id: UUID,
+    current_user: CurrentUserDep,
+    service: CategoryServiceDep,
 ):
-    await service.delete(category_id)
+    await service.delete(
+        category_id=category_id,
+        company_id=company_id,
+        owner_id=current_user.id,
+    )

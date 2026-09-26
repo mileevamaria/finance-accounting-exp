@@ -26,7 +26,7 @@ async def create_company(
 
 
 @router.get('', response_model=list[CompanyResponse])
-async def get_all(
+async def get_my_companies(
     current_user: CurrentUserDep,
     service: CompanyServiceDep,
 ):
@@ -37,12 +37,15 @@ async def get_all(
     ]
 
 @router.get('/{company_id}', response_model=CompanyResponse)
-async def get
+async def get_my_company(
     company_id: UUID,
     current_user: CurrentUserDep,
     service: CompanyServiceDep,
 ):
-    company = await service.getcompany_id, current_user.id)
+    company = await service.get_company_or_404(
+        company_id=company_id,
+        owner_id=current_user.id,
+    )
     return CompanyResponse.model_validate(company)
 
 
@@ -59,6 +62,10 @@ async def update_company(
 @router.delete('/{company_id}', status_code=status.HTTP_204_NO_CONTENT)
 async def delete_company(
     company_id: UUID,
+    current_user: CurrentUserDep,
     service: CompanyServiceDep,
 ):
-    await service.delete(company_id)
+    await service.delete(
+        company_id=company_id,
+        owner_id=current_user.id,
+    )

@@ -19,13 +19,13 @@ class CompanyService:
     async def get_all(self, owner_id: UUID) -> Sequence[Company]:
         return await self.repo.get_by_owner(owner_id)
 
-    async def get(
+    async def get_company_or_404(
         self, 
         company_id: UUID, 
         owner_id: UUID,
     ) -> Company | None:
         company = await self.repo.get_by_id(obj_id=company_id)
-        if not company or company.owner_id != owner_id:
+        if company is None or company.owner_id != owner_id:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, 
                 detail='Company not found',
@@ -46,5 +46,10 @@ class CompanyService:
         
         return await self.repo.update(company)
 
-    async def delete(self, obj_id: UUID) -> None:
-        await self.repo.delete(obj_id)
+    async def delete(self, company_id: UUID, owner_id: UUID) -> None:
+        company = await self.get_company_or_404(
+            company_id=company_id, 
+            owner_id=owner_id,
+        )
+        if company:
+            await self.repo.delete(company.id)

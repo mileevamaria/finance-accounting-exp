@@ -9,6 +9,7 @@ from app.schemas.projects import (
     ProjectCreate,
     ProjectUpdate,
 )
+from app.services import CompanyService
 
 
 class ProjectService:
@@ -16,24 +17,11 @@ class ProjectService:
         self,
         project_repo: ProjectRepository,
         company_repo: CompanyRepository,
+        company_service: CompanyService,
     ):
         self.project_repo = project_repo
         self.company_repo = company_repo
-
-    async def _get_company_or_404(
-        self,
-        company_id: UUID,
-        owner_id: UUID,
-    ):
-        company = await self.company_repo.get_by_id(company_id)
-
-        if company is None or company.owner_id != owner_id:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Company not found",
-            )
-
-        return company
+        self.company_service = company_service
 
     async def create(
         self,
@@ -41,7 +29,7 @@ class ProjectService:
         owner_id: UUID,
         data: ProjectCreate,
     ) -> Project:
-        await self._get_company_or_404(company_id, owner_id)
+        await self.company_service.get_company_or_404(company_id, owner_id)
 
         project = Project(
             company_id=company_id,
@@ -55,7 +43,7 @@ class ProjectService:
         company_id: UUID,
         owner_id: UUID,
     ) -> Sequence[Project]:
-        await self._get_company_or_404(company_id, owner_id)
+        await self.company_service.get_company_or_404(company_id, owner_id)
 
         return await self.project_repo.get_by_company(company_id)
 
@@ -65,7 +53,7 @@ class ProjectService:
         company_id: UUID,
         owner_id: UUID,
     ) -> Project:
-        await self._get_company_or_404(company_id, owner_id)
+        await self.company_service.get_company_or_404(company_id, owner_id)
 
         project = await self.project_repo.get_by_id(project_id)
 
@@ -95,5 +83,15 @@ class ProjectService:
 
         return await self.project_repo.update(project)
 
-    async def delete(self, obj_id: UUID) -> None:
-        await self.project_repo.delete(obj_id)
+    async def delete(
+        self, 
+        project_id: UUID,
+        company_id: UUID,
+        owner_id: UUID,
+    ) -> None:
+        project = await self.get(
+            project_id=project_id,
+            company_id=company_id,
+            owner_id=owner_id,
+        )
+        await self.project_repo.delete(project.id)

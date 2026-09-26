@@ -3,6 +3,7 @@ from .auth import AuthService
 from .categories import CategoryGroupService, CategoryService
 from .companies import CompanyService
 from .projects import ProjectService
+from .reports import ReportService
 from .transactions import TransactionService
 from .users import UserService
 
@@ -13,6 +14,7 @@ __all__ = [
     'CategoryService',
     'CompanyService',
     'ProjectService',
+    'ReportService',
     'TransactionService',
     'UserService',
 ]

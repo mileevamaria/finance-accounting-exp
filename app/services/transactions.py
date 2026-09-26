@@ -59,7 +59,7 @@ class TransactionService:
                 )
 
         transaction = Transaction(
-            account_id=account.id,
+            account_id=account_id,
             category_id=category.id,
             project_id=data.project_id,
             amount=data.amount,
@@ -150,5 +150,17 @@ class TransactionService:
 
         return await self.transaction_repo.update(transaction)
 
-    async def delete(self, obj_id: UUID) -> None:
-        await self.transaction_repo.delete(obj_id)
+    async def delete(
+        self, 
+        transaction_id: UUID,
+        account_id: UUID,
+        company_id: UUID,
+        owner_id: UUID,
+    ) -> None:
+        group = await self.get(
+            transaction_id=transaction_id,
+            company_id=company_id,
+            account_id=account_id,
+            owner_id=owner_id,
+        )
+        await self.transaction_repo.delete(group.id)

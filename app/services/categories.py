@@ -3,7 +3,7 @@ from uuid import UUID
 
 from fastapi import HTTPException, status
 
-from app.models import Category, CategoryGroup, Company
+from app.models import Category, CategoryGroup
 from app.repositories import (
     CategoryGroupRepository,
     CategoryRepository,
@@ -15,31 +15,17 @@ from app.schemas.categories import (
     CategoryGroupUpdate,
     CategoryUpdate,
 )
+from app.services import CompanyService
 
 
 class CategoryGroupService:
     def __init__(
         self,
         group_repo: CategoryGroupRepository,
-        company_repo: CompanyRepository,
+        company_service: CompanyService,
     ):
         self.group_repo = group_repo
-        self.company_repo = company_repo
-
-    async def get_company_or_404(
-        self,
-        company_id: UUID,
-        owner_id: UUID,
-    ) -> Company:
-        company = await self.company_repo.get_by_id(company_id)
-
-        if company is None or company.owner_id != owner_id:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail='Company not found',
-            )
-
-        return company
+        self.company_service = company_service
 
     async def create(
         self,
@@ -47,7 +33,7 @@ class CategoryGroupService:
         owner_id: UUID,
         data: CategoryGroupCreate,
     ) -> CategoryGroup:
-        await self.get_company_or_404(company_id, owner_id)
+        await self.company_service.get_company_or_404(company_id, owner_id)
 
         group = CategoryGroup(
             company_id=company_id,
@@ -61,20 +47,18 @@ class CategoryGroupService:
         company_id: UUID,
         owner_id: UUID,
     ) -> Sequence[CategoryGroup]:
-        await self.get_company_or_404(company_id, owner_id)
-
+        await self.company_service.get_company_or_404(company_id, owner_id)
         return await self.group_repo.get_by_company(company_id)
 
-    async def get_group(
+    async def get(
         self,
         group_id: UUID,
         company_id: UUID,
         owner_id: UUID,
     ) -> CategoryGroup:
-        await self.get_company_or_404(company_id, owner_id)
+        await self.company_service.get_company_or_404(company_id, owner_id)
 
         group = await self.group_repo.get_by_id(group_id)
-
         if group is None or group.company_id != company_id:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -90,7 +74,7 @@ class CategoryGroupService:
         owner_id: UUID,
         data: CategoryGroupUpdate,
     ) -> CategoryGroup:
-        group = await self.get_group(
+        group = await self.get(
             group_id=group_id,
             company_id=company_id,
             owner_id=owner_id,
@@ -101,8 +85,18 @@ class CategoryGroupService:
 
         return await self.group_repo.update(group)
 
-    async def delete(self, obj_id: UUID) -> None:
-        await self.group_repo.delete(obj_id)
+    async def delete(
+        self, 
+        group_id: UUID,
+        company_id: UUID,
+        owner_id: UUID,
+    ) -> None:
+        group = await self.get(
+            group_id=group_id,
+            company_id=company_id, 
+            owner_id=owner_id,
+        )
+        await self.group_repo.delete(group.id)
 
 
 class CategoryService:
@@ -110,9 +104,11 @@ class CategoryService:
         self,
         category_repo: CategoryRepository,
         group_service: CategoryGroupService,
+        company_service: CompanyService
     ):
         self.category_repo = category_repo
         self.group_service = group_service
+        self.company_service = company_service
 
     async def create(
         self,
@@ -120,7 +116,7 @@ class CategoryService:
         owner_id: UUID,
         data: CategoryCreate,
     ) -> Category:
-        group = await self.group_service.get_group(
+        group = await self.group_service.get(
             group_id=data.group_id,
             company_id=company_id,
             owner_id=owner_id,
@@ -140,7 +136,7 @@ class CategoryService:
         company_id: UUID,
         owner_id: UUID,
     ) -> Sequence[Category]:
-        await self.group_service.get_company_or_404(
+        await self.company_service.get_company_or_404(
             company_id,
             owner_id,
         )
@@ -153,7 +149,7 @@ class CategoryService:
         company_id: UUID,
         owner_id: UUID,
     ) -> Category:
-        await self.group_service.get_company_or_404(
+        await self.company_service.get_company_or_404(
             company_id,
             owner_id,
         )
@@ -182,7 +178,7 @@ class CategoryService:
         )
 
         if data.group_id is not None:
-            group = await self.group_service.get_group(
+            group = await self.group_service.get(
                 group_id=data.group_id,
                 company_id=company_id,
                 owner_id=owner_id,
@@ -200,5 +196,15 @@ class CategoryService:
 
         return await self.category_repo.update(category)
 
-    async def delete(self, obj_id: UUID) -> None:
-        await self.category_repo.delete(obj_id)
+    async def delete(
+        self, 
+        category_id: UUID,
+        company_id: UUID,
+        owner_id: UUID,
+    ) -> None:
+        category = await self.get(
+            category_id=category_id,
+            company_id=company_id,
+            owner_id=owner_id,
+        )
+        await self.category_repo.delete(category.id)
