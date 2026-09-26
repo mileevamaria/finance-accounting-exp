@@ -45,3 +45,6 @@ class CompanyService:
             setattr(company, field, value)
         
         return await self.repo.update(company)
+
+    async def delete(self, obj_id: UUID) -> None:
+        await self.repo.delete(obj_id)

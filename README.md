@@ -6,3 +6,4 @@
 - [ ] Format README.md
 - [ ] Caching balance, snapshots
 - [ ] Dummy hash
+- [ ] Makefile

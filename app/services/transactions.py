@@ -127,3 +127,6 @@ class TransactionService:
             setattr(transaction, field, value)
 
         return await self.transaction_repo.update(transaction)
+
+    async def delete(self, obj_id: UUID) -> None:
+        await self.transaction_repo.delete(obj_id)

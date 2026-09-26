@@ -1,4 +1,4 @@
-from enum import Enum
+from enum import StrEnum
 from typing import TYPE_CHECKING
 from uuid import UUID
 
@@ -31,7 +31,7 @@ class CategoryGroup(Base, UUIDMixin):
     )
 
 
-class CategoryIconColor(str, Enum):
+class CategoryIconColor(StrEnum):
     RED = '#F44336'
     PINK = '#E91E63'
     PURPLE = '#9C27B0'
@@ -68,4 +68,8 @@ class Category(Base, UUIDMixin):
 
     transactions: Mapped[list['Transaction']] = relationship(
         back_populates='category',
+    )
+
+    company: Mapped["Company"] = relationship(
+        back_populates="categories",
     )

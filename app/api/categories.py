@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from fastapi import APIRouter
+from fastapi import APIRouter, status
 
 from app.core.dependencies import (
     CategoryGroupServiceDep,
@@ -95,6 +95,17 @@ async def update_group(
     return CategoryGroupResponse.model_validate(group)
 
 
+@router.delete(
+    '/category-groups/{group_id}', 
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def delete_group(
+    group_id: UUID,
+    service: CategoryGroupServiceDep,
+):
+    await service.delete(group_id)
+
+
 @router.post('/categories', response_model=CategoryResponse)
 async def create_category(
     company_id: UUID,
@@ -166,3 +177,14 @@ async def update_category(
     )
 
     return CategoryResponse.model_validate(category)
+
+
+@router.delete(
+    '/categories/{category_id}', 
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def delete_category(
+    category_id: UUID,
+    service: CategoryGroupServiceDep,
+):
+    await service.delete(category_id)

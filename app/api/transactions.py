@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from fastapi import APIRouter
+from fastapi import APIRouter, status
 
 from app.core.dependencies import (
     CurrentUserDep,
@@ -97,3 +97,11 @@ async def update_transaction(
     )
 
     return TransactionResponse.model_validate(transaction)
+
+
+@router.delete('/{transaction_id}', status_code=status.HTTP_204_NO_CONTENT)
+async def delete_transaction(
+    transaction_id: UUID,
+    service: TransactionServiceDep,
+):
+    await service.delete(transaction_id)

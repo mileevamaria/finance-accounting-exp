@@ -26,7 +26,7 @@ class CategoryGroupService:
         self.group_repo = group_repo
         self.company_repo = company_repo
 
-    async def _get_company_or_404(
+    async def get_company_or_404(
         self,
         company_id: UUID,
         owner_id: UUID,
@@ -47,7 +47,7 @@ class CategoryGroupService:
         owner_id: UUID,
         data: CategoryGroupCreate,
     ) -> CategoryGroup:
-        await self._get_company_or_404(company_id, owner_id)
+        await self.get_company_or_404(company_id, owner_id)
 
         group = CategoryGroup(
             company_id=company_id,
@@ -61,7 +61,7 @@ class CategoryGroupService:
         company_id: UUID,
         owner_id: UUID,
     ) -> Sequence[CategoryGroup]:
-        await self._get_company_or_404(company_id, owner_id)
+        await self.get_company_or_404(company_id, owner_id)
 
         return await self.group_repo.get_by_company(company_id)
 
@@ -71,7 +71,7 @@ class CategoryGroupService:
         company_id: UUID,
         owner_id: UUID,
     ) -> CategoryGroup:
-        await self._get_company_or_404(company_id, owner_id)
+        await self.get_company_or_404(company_id, owner_id)
 
         group = await self.group_repo.get_by_id(group_id)
 
@@ -100,6 +100,9 @@ class CategoryGroupService:
             setattr(group, field, value)
 
         return await self.group_repo.update(group)
+
+    async def delete(self, obj_id: UUID) -> None:
+        await self.group_repo.delete(obj_id)
 
 
 class CategoryService:
@@ -137,7 +140,7 @@ class CategoryService:
         company_id: UUID,
         owner_id: UUID,
     ) -> Sequence[Category]:
-        await self.group_service._get_company_or_404(
+        await self.group_service.get_company_or_404(
             company_id,
             owner_id,
         )
@@ -150,7 +153,7 @@ class CategoryService:
         company_id: UUID,
         owner_id: UUID,
     ) -> Category:
-        await self.group_service._get_company_or_404(
+        await self.group_service.get_company_or_404(
             company_id,
             owner_id,
         )
@@ -185,6 +188,7 @@ class CategoryService:
                 owner_id=owner_id,
             )
             category.group_id = group.id
+            assert group.company_id == category.company_id
 
         update_data = data.model_dump(
             exclude_unset=True,
@@ -195,3 +199,6 @@ class CategoryService:
             setattr(category, field, value)
 
         return await self.category_repo.update(category)
+
+    async def delete(self, obj_id: UUID) -> None:
+        await self.category_repo.delete(obj_id)

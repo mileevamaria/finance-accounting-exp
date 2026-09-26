@@ -17,7 +17,7 @@ class AccountService:
         self.account_repo = account_repo
         self.company_repo = company_repo
 
-    async def _get_company_or_404(
+    async def get_company_or_404(
         self,
         company_id: UUID,
         owner_id: UUID,
@@ -37,7 +37,7 @@ class AccountService:
         owner_id: UUID, 
         data: AccountCreate,
     ) -> Account:
-        await self._get_company_or_404(company_id, owner_id)
+        await self.get_company_or_404(company_id, owner_id)
 
         account = Account(company_id=company_id, **data.model_dump())
         return await self.account_repo.create(account)
@@ -47,7 +47,7 @@ class AccountService:
         company_id: UUID, 
         owner_id: UUID,
     ) -> Sequence[Account]:
-        await self._get_company_or_404(company_id, owner_id)
+        await self.get_company_or_404(company_id, owner_id)
         return await self.account_repo.get_by_company(company_id)
 
     async def get_account(
@@ -56,7 +56,7 @@ class AccountService:
         company_id: UUID, 
         owner_id: UUID,
     ) -> Account:
-        await self._get_company_or_404(company_id, owner_id)
+        await self.get_company_or_404(company_id, owner_id)
 
         account = await self.account_repo.get_by_id(obj_id=account_id)
         if account is None or account.company_id != company_id:
@@ -84,3 +84,6 @@ class AccountService:
         for field, value in account_data.items():
             setattr(account, field, value)
         return await self.account_repo.update(account)
+
+    async def delete(self, obj_id: UUID) -> None:
+        await self.account_repo.delete(obj_id)

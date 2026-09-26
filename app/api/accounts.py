@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from fastapi import APIRouter
+from fastapi import APIRouter, status
 
 from app.core.dependencies import (
     AccountServiceDep,
@@ -83,3 +83,11 @@ async def update_account(
     )
 
     return AccountResponse.model_validate(account)
+
+
+@router.delete('{account_id}', status_code=status.HTTP_204_NO_CONTENT)
+async def delete_category(
+    category_id: UUID,
+    service: AccountServiceDep,
+):
+    await service.delete(category_id)

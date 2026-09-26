@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from fastapi import APIRouter
+from fastapi import APIRouter, status
 
 from app.core.dependencies import CompanyServiceDep, CurrentUserDep
 from app.schemas.companies import (
@@ -54,3 +54,11 @@ async def update_company(
 ):
     company = await service.update(company_id, data)
     return CompanyResponse.model_validate(company)
+
+
+@router.delete('/{company_id}', status_code=status.HTTP_204_NO_CONTENT)
+async def delete_company(
+    company_id: UUID,
+    service: CompanyServiceDep,
+):
+    await service.delete(company_id)
