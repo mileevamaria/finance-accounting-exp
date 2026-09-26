@@ -66,7 +66,11 @@ class Category(Base, UUIDMixin):
     )
     name: Mapped[str] = mapped_column(String(255))
     icon_color: Mapped[CategoryIconColor] = mapped_column(
-        SQLEnum(CategoryIconColor),
+        SQLEnum(
+            CategoryIconColor,
+            values_callable=lambda enum: [e.value for e in enum],
+            name="category_icon_color",
+        ),
         default=CategoryIconColor.GREY,
     )
 
