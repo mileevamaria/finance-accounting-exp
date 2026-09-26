@@ -4,7 +4,11 @@ from uuid import UUID
 from fastapi import HTTPException, status
 
 from app.models import Transaction
-from app.repositories import CategoryRepository, TransactionRepository
+from app.repositories import (
+    CategoryRepository,
+    ProjectRepository,
+    TransactionRepository,
+)
 from app.schemas.transactions import (
     TransactionCreate,
     TransactionUpdate,
@@ -18,10 +22,12 @@ class TransactionService:
         transaction_repo: TransactionRepository,
         category_repo: CategoryRepository,
         account_service: AccountService,
+        project_repo: ProjectRepository,
     ):
         self.transaction_repo = transaction_repo
         self.category_repo = category_repo
         self.account_service = account_service
+        self.project_repo = project_repo
 
     async def create(
         self,
@@ -41,12 +47,21 @@ class TransactionService:
         if category is None or category.company_id != company_id:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Category not found",
+                detail='Category not found',
             )
+
+        if data.project_id is not None:
+            project = await self.project_repo.get_by_id(data.project_id)
+            if project is None or project.company_id != company_id:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail='Project not found',
+                )
 
         transaction = Transaction(
             account_id=account.id,
             category_id=category.id,
+            project_id=data.project_id,
             amount=data.amount,
             occurred_at=data.occurred_at,
             counterparty=data.counterparty,
@@ -109,18 +124,25 @@ class TransactionService:
 
         if data.category_id is not None:
             category = await self.category_repo.get_by_id(data.category_id)
-
             if category is None or category.company_id != company_id:
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail="Category not found",
                 )
-
             transaction.category_id = category.id
+
+        if data.project_id is not None:
+            project = await self.project_repo.get_by_id(data.project_id)
+            if project is None or project.company_id != company_id:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail='Project not found',
+                )
+            transaction.project_id = project.id
 
         update_data = data.model_dump(
             exclude_unset=True,
-            exclude={"category_id"},
+            exclude={'category_id', 'project_id'},
         )
 
         for field, value in update_data.items():

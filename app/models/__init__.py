@@ -2,6 +2,7 @@ from .accounts import Account
 from .auth import Token
 from .categories import Category, CategoryGroup
 from .companies import Company
+from .projects import Project
 from .transactions import Transaction
 from .users import User
 
@@ -10,6 +11,7 @@ __all__ = [
     'Category',
     'CategoryGroup',
     'Company',
+    'Project',
     'Token',
     'Transaction',
     'User',

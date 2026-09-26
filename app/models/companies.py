@@ -8,7 +8,7 @@ from app.db.base import Base
 from app.models.mixins import SoftDeleteMixin, UUIDMixin
 
 if TYPE_CHECKING:
-    from app.models import Account, Category, CategoryGroup, User
+    from app.models import Account, Category, CategoryGroup, Project, User
 
 
 class Company(Base, SoftDeleteMixin, UUIDMixin):
@@ -43,4 +43,9 @@ class Company(Base, SoftDeleteMixin, UUIDMixin):
     categories: Mapped[list['Category']] = relationship(
         back_populates='company',
         cascade='all, delete-orphan',
+    )
+
+    projects: Mapped[list['Project']] = relationship(
+        back_populates="company",
+        cascade="all, delete-orphan",
     )

@@ -10,6 +10,7 @@ class TransactionCreate(BaseModel):
     amount: Money
     category_id: UUID
     occurred_at: datetime
+    project_id: UUID | None = None
     counterparty: str | None = Field(default=None, max_length=255)
     description: str | None = Field(default=None, max_length=500)
 
@@ -17,6 +18,7 @@ class TransactionCreate(BaseModel):
 class TransactionUpdate(BaseModel):
     amount: Money | None = None
     category_id: UUID | None = None
+    project_id: UUID | None = None
     occurred_at: datetime | None = None
     counterparty: str | None = Field(default=None, max_length=255)
     description: str | None = Field(default=None, max_length=500)

@@ -14,6 +14,7 @@ from app.repositories import (
     CategoryGroupRepository,
     CategoryRepository,
     CompanyRepository,
+    ProjectRepository,
     TokenRepository,
     TransactionRepository,
     UserRepository,
@@ -24,6 +25,7 @@ from app.services import (
     CategoryGroupService,
     CategoryService,
     CompanyService,
+    ProjectService,
     TransactionService,
     UserService,
 )
@@ -141,9 +143,22 @@ def get_transaction_service(
         transaction_repo=TransactionRepository(session),
         category_repo=CategoryRepository(session),
         account_service=account_service,
+        project_repo=ProjectRepository(session),
     )
         
 TransactionServiceDep = Annotated[
     TransactionService,
     Depends(get_transaction_service),
+]
+
+
+def get_project_service(session: SessionDep) -> ProjectService:
+    return ProjectService(
+        project_repo=ProjectRepository(session),
+        company_repo=CompanyRepository(session),
+    )
+        
+ProjectServiceDep = Annotated[
+    ProjectService,
+    Depends(get_project_service),
 ]

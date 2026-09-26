@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from uuid import UUID
 
 from sqlalchemy import Enum as SQLEnum
-from sqlalchemy import ForeignKey, String
+from sqlalchemy import ForeignKey, Index, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
@@ -15,6 +15,10 @@ if TYPE_CHECKING:
 
 class CategoryGroup(Base, UUIDMixin):
     __tablename__ = 'category_groups'
+
+    __table_args__ = (
+        Index("ix_category_groups_company", "company_id"),
+    )
 
     company_id: Mapped[UUID] = mapped_column(
         ForeignKey('companies.id', ondelete='CASCADE'),
@@ -49,6 +53,10 @@ class CategoryIconColor(StrEnum):
 
 class Category(Base, UUIDMixin):
     __tablename__ = 'categories'
+
+    __table_args__ = (
+        Index("ix_categories_company_group", "company_id", "group_id"),
+    )
 
     company_id: Mapped[UUID] = mapped_column(
         ForeignKey('companies.id', ondelete='CASCADE')
