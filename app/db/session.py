@@ -19,5 +19,5 @@ SessionLocal = async_sessionmaker(
 
 
 async def get_session():
-    async with SessionLocal() as session:
+    async with SessionLocal() as session, session.begin():
         yield session

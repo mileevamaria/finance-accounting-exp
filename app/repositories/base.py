@@ -13,12 +13,12 @@ class BaseRepository[Model]:
 
     async def create(self, obj: Model) -> Model:
         self.session.add(obj)
-        await self.session.commit()
+        await self.session.flush()
         await self.session.refresh(obj)
         return obj
 
     async def update(self, obj: Model) -> Model:
-        await self.session.commit()
+        await self.session.flush()
         await self.session.refresh(obj)
         return obj
 

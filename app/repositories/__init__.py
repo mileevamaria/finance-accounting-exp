@@ -6,6 +6,7 @@ from .companies import CompanyRepository
 from .mixins import SoftDeletionMixin
 from .projects import ProjectRepository
 from .reports import ReportRepository
+from .subscriptions import SubscriptionRepository
 from .transactions import TransactionRepository
 from .users import UserRepository
 
@@ -18,6 +19,7 @@ __all__ = [
     'ProjectRepository',
     'ReportRepository',
     'SoftDeletionMixin',
+    'SubscriptionRepository',
     'TokenRepository',
     'TransactionRepository',
     'UserRepository',

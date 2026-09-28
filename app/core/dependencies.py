@@ -16,6 +16,7 @@ from app.repositories import (
     CompanyRepository,
     ProjectRepository,
     ReportRepository,
+    SubscriptionRepository,
     TokenRepository,
     TransactionRepository,
     UserRepository,
@@ -28,6 +29,7 @@ from app.services import (
     CompanyService,
     ProjectService,
     ReportService,
+    SubscriptionService,
     TransactionService,
     UserService,
 )
@@ -190,4 +192,16 @@ def get_report_service(
 ReportServiceDep = Annotated[
     ReportService,
     Depends(get_report_service),
+]
+
+
+def get_subscription_service(session: SessionDep) -> SubscriptionService:
+    return SubscriptionService(
+        session=session,
+        subscription_repo=SubscriptionRepository(session),
+    )
+        
+SubscriptionServiceDep = Annotated[
+    SubscriptionService,
+    Depends(get_subscription_service),
 ]
