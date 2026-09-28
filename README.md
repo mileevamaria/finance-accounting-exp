@@ -1,8 +1,7 @@
 ### Реализовать
 - [x] JWT
-- [ ] Payment
-- [ ] Banking API
-- [ ] Websokets
+- [x] Payment
+- [x] Websokets
 - [ ] Format README.md
 - [ ] Dummy hash
 - [ ] Makefile
