@@ -24,6 +24,7 @@ class Settings(BaseSettings):
     database_url: str
     debug: bool
     secret_key: str
+    dummy_hash: str
     model_config = SettingsConfigDict(
         env_file='.env',
         env_file_encoding='utf-8',

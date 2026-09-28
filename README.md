@@ -3,8 +3,8 @@
 - [x] Payment
 - [x] Websokets
 - [ ] Format README.md
-- [ ] Dummy hash
-- [ ] Makefile
+- [x] Dummy hash
+- [x] Makefile
 - [ ] Tests, coverage, actions
 - [x] Statements: 
     - [x] P&L by categories

@@ -2,13 +2,13 @@ from uuid import UUID, uuid4
 
 from fastapi import HTTPException, status
 
+from app.core import settings
 from app.core.jwt import (
     create_access_token,
     create_refresh_token,
     decode_token,
 )
 from app.core.security import (
-    DUMMY_HASH,
     hash_refresh_token,
     verify_password,
     verify_refresh_token,
@@ -57,7 +57,7 @@ class AuthService:
         else:
             user = await self.user_repo.get_by_phone(identifier)
         if user is None:
-            verify_password(data.password, DUMMY_HASH)
+            verify_password(data.password, settings.dummy_hash)
             raise InvalidCredentialsException
 
         password = data.password

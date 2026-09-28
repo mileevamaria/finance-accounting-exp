@@ -1,7 +1,6 @@
 from pwdlib import PasswordHash
 
 hash_tool = PasswordHash.recommended()
-DUMMY_HASH = hash_tool.hash('dummy-password')
 
 # password hashing
 def hash_password(password: str) -> str:
