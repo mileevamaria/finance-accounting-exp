@@ -1,13 +1,5 @@
-async def test_logout_success(client):
-    register = await client.post(
-        '/users/',
-        json={
-            'first_name': 'John',
-            'last_name': 'Dow',
-            'email': 'john@test.com',
-            'password': 'Password123',
-        },
-    )
+async def test_logout_success(client, user_payload):
+    register = await client.post('/users/', json=user_payload)
     refresh = register.json()['refresh_token']
     response = await client.post(
         '/auth/logout',

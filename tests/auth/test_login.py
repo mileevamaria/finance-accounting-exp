@@ -1,18 +1,9 @@
-async def test_login_success(client):
-    await client.post(
-        '/users/',
-        json={
-            'first_name': 'John',
-            'last_name': 'Dow',
-            'email': 'john@test.com',
-            'password': 'Password123',
-        },
-    )
+async def test_login_success(client, user_payload, registered_user):
     response = await client.post(
         '/auth/login',
         json={
-            'identifier': 'john@test.com',
-            'password': 'Password123',
+            'identifier': user_payload['email'],
+            'password': user_payload['password'],
         },
     )
     assert response.status_code == 200
@@ -21,20 +12,11 @@ async def test_login_success(client):
     assert body['refresh_token']
 
 
-async def test_login_wrong_password(client):
-    await client.post(
-        '/users/',
-        json={
-            'first_name': 'John',
-            'last_name': 'Dow',
-            'email': 'john@test.com',
-            'password': 'Password123',
-        },
-    )
+async def test_login_wrong_password(client, user_payload, registered_user):
     response = await client.post(
         '/auth/login',
         json={
-            'identifier': 'john@test.com',
+            'identifier': user_payload['email'],
             'password': 'WrongPassword123',
         },
     )

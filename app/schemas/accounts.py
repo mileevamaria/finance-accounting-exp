@@ -9,7 +9,7 @@ from app.schemas.types import Money
 
 class AccountCreate(BaseModel):
     name: str = Field(min_length=1, max_length=255)
-    type: AccountType
+    type: AccountType | None = AccountType.BANK
     currency: AccountCurrency
     opening_balance: Money = Decimal("0.00")
 

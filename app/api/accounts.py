@@ -27,8 +27,8 @@ async def create_account(
     service: AccountServiceDep,
 ):
     account = await service.create(
-        current_user.id,
         company_id,
+        current_user.id,
         data,
     )
     return AccountResponse.model_validate(account)
@@ -41,8 +41,8 @@ async def get_accounts(
     service: AccountServiceDep,
 ):
     accounts = await service.get_all(
-        current_user.id,
         company_id,
+        current_user.id,
     )
 
     return [
@@ -67,9 +67,9 @@ async def get_account(
     service: AccountServiceDep,
 ):
     account, balance = await service.get(
-        current_user.id,
-        company_id,
         account_id,
+        company_id,
+        current_user.id,
     )
 
     return AccountResponseWithBalance(
@@ -100,7 +100,7 @@ async def update_account(
     return AccountResponse.model_validate(account)
 
 
-@router.delete('{account_id}', status_code=status.HTTP_204_NO_CONTENT)
+@router.delete('/{account_id}', status_code=status.HTTP_204_NO_CONTENT)
 async def delete_account(
     account_id: UUID,
     company_id: UUID,

@@ -1,7 +1,7 @@
 from datetime import datetime
 from uuid import UUID, uuid4
 
-from sqlalchemy import func
+from sqlalchemy import DateTime, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 
@@ -23,4 +23,5 @@ class UUIDMixin:
 
 
 class SoftDeleteMixin(UUIDMixin):
-    deleted_at: Mapped[datetime | None] = mapped_column(nullable=True)
+    deleted_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True)
