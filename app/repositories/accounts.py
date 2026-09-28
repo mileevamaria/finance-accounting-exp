@@ -6,7 +6,7 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import Account, Transaction
-from app.repositories import BaseRepository
+from app.repositories.base import BaseRepository
 
 
 class AccountRepository(BaseRepository[Account]):

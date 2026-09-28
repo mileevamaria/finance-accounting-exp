@@ -27,3 +27,13 @@ dev = [
     "ruff>=0.16.4",
     "uvicorn>=0.53.0",
 ]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+
+[tool.alembic]
+script_location = "alembic"
+prepend_sys_path = "."
+path_separator = "os"

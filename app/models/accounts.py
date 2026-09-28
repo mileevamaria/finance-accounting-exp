@@ -11,7 +11,7 @@ from app.db.base import Base
 from app.models.mixins import UUIDMixin
 
 if TYPE_CHECKING:
-    from app.models import Company
+    from app.models import Company, Transaction
 
 
 class AccountCurrency(str, Enum):
@@ -29,7 +29,7 @@ class Account(Base, UUIDMixin):
     __tablename__ = 'accounts'
 
     __table_args__ = (
-        Index("ix_accounts_company", "company_id"),
+        Index('ix_accounts_company', 'company_id'),
     )
 
     company_id: Mapped[UUID] = mapped_column(
@@ -45,3 +45,8 @@ class Account(Base, UUIDMixin):
     company: Mapped['Company'] = relationship(
         back_populates='accounts',
     ) 
+
+    transactions: Mapped[list['Transaction']] = relationship(
+        back_populates='account',
+        cascade='all, delete-orphan',
+    )

@@ -2,7 +2,8 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import User
-from app.repositories import BaseRepository, SoftDeletionMixin
+from app.repositories.base import BaseRepository
+from app.repositories.mixins import SoftDeletionMixin
 
 
 class UserRepository(SoftDeletionMixin[User], BaseRepository[User]):

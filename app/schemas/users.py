@@ -7,7 +7,7 @@ class _UserBase(BaseModel):
     first_name: str = Field(min_length=1, max_length=64)
     last_name: str | None = Field(min_length=1, max_length=64)
     email: EmailStr
-    phone: str | None = Field(max_length=64)
+    phone: str | None = Field(max_length=64, default=None)
 
 
 class UserCreate(_UserBase):

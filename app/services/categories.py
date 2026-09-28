@@ -14,7 +14,7 @@ from app.schemas.categories import (
     CategoryGroupUpdate,
     CategoryUpdate,
 )
-from app.services import CompanyService
+from app.services.companies import CompanyService
 
 
 class CategoryGroupService:

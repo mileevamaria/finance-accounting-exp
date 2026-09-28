@@ -22,6 +22,7 @@ class Settings(BaseSettings):
 
     # ENV
     database_url: str
+    test_database_url: str
     debug: bool
     secret_key: str
     dummy_hash: str

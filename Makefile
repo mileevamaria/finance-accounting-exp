@@ -2,7 +2,7 @@
 	revision upgrade downgrade current history shell
 
 UV := uv
-ALEMBIC := $(UV) run alembic
+ALEMBIC := uv run alembic -c pyproject.toml
 
 help:
 	@echo "Available commands:"
@@ -12,6 +12,7 @@ help:
 	@echo "  make format               Format code"
 	@echo "  make check                Ruff check + format check"
 	@echo "  make test                 Run tests"
+	@echo "  make test-cov             Test coverage"
 	@echo "  make revision m='msg'     Create migration"
 	@echo "  make upgrade              Apply migrations"
 	@echo "  make downgrade            Roll back one migration"
@@ -37,6 +38,9 @@ check:
 
 test:
 	$(UV) run pytest
+
+test-cov:
+	$(UV) run pytest --cov=app --cov-report=term-missing
 
 revision:
 	$(ALEMBIC) revision --autogenerate -m "$(m)"

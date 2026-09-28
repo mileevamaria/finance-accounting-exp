@@ -9,7 +9,7 @@ from app.schemas.projects import (
     ProjectCreate,
     ProjectUpdate,
 )
-from app.services import CompanyService
+from app.services.companies import CompanyService
 
 
 class ProjectService:

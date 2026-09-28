@@ -4,7 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import Subscription
-from app.repositories import BaseRepository
+from app.repositories.base import BaseRepository
 
 
 class SubscriptionRepository(BaseRepository[Subscription]):

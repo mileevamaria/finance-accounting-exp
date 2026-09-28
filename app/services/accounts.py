@@ -6,7 +6,7 @@ from fastapi import HTTPException, status
 from app.models import Account
 from app.repositories import AccountRepository, CompanyRepository
 from app.schemas.accounts import AccountCreate, AccountUpdate
-from app.services import CompanyService
+from app.services.companies import CompanyService
 
 
 class AccountService:

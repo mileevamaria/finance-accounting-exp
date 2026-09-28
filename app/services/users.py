@@ -1,6 +1,7 @@
 from uuid import UUID
 
-from fastapi import HTTPException
+from fastapi import HTTPException, status
+from sqlalchemy.exc import IntegrityError
 
 from app.core.security import hash_password
 from app.models.users import User
@@ -24,7 +25,15 @@ class UserService:
     async def create(self, data: UserCreate) -> User:
         user_data = data.model_dump(exclude={'password'})
         user_data['hashed_password'] = hash_password(data.password)
-        return await self.repo.create(User(**user_data))
+        try:
+            return await self.repo.create(User(**user_data))
+        except IntegrityError as e:
+            if "ix_users_email" in str(e.orig):
+                raise HTTPException(
+                    status_code=status.HTTP_409_CONFLICT,
+                    detail="User with this email already exists",
+                ) from e
+            raise
 
     async def update(self, user_id: UUID, data: UserUpdate) -> User:
         user = await self._get_user_from_db(user_id=user_id)

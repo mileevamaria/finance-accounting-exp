@@ -9,7 +9,7 @@ from app.schemas.reports import (
     PnlGroupResponse,
     PnlProjectResponse,
 )
-from app.services import CompanyService
+from app.services.companies import CompanyService
 
 
 class ReportService:
