@@ -7,6 +7,7 @@ from .reports import ReportService
 from .subscriptions import SubscriptionService
 from .transactions import TransactionService
 from .users import UserService
+from .websockets import WebSocketService
 
 __all__ = [
     'AccountService',
@@ -19,4 +20,5 @@ __all__ = [
     'SubscriptionService',
     'TransactionService',
     'UserService',
+    'WebSocketService',
 ]

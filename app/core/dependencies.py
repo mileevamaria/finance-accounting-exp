@@ -32,6 +32,7 @@ from app.services import (
     SubscriptionService,
     TransactionService,
     UserService,
+    WebSocketService,
 )
 
 SessionDep = Annotated[AsyncSession, Depends(get_session)]
@@ -204,4 +205,14 @@ def get_subscription_service(session: SessionDep) -> SubscriptionService:
 SubscriptionServiceDep = Annotated[
     SubscriptionService,
     Depends(get_subscription_service),
+]
+
+
+def get_websocket_service():
+    return WebSocketService()
+
+
+WebSocketServiceDep = Annotated[
+    WebSocketService,
+    Depends(get_websocket_service),
 ]
