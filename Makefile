@@ -40,7 +40,10 @@ test:
 	$(UV) run pytest
 
 test-cov:
-	$(UV) run pytest --cov=app --cov-report=term-missing
+	$(UV) run pytest \
+			--cov=app \
+			--cov-report=xml \
+			--cov-report=term-missing
 
 revision:
 	$(ALEMBIC) revision --autogenerate -m "$(m)"
