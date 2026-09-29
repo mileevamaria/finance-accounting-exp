@@ -75,8 +75,8 @@ async def get_current_user(token: TokenDep, session: SessionDep) -> User:
             raise credentials_exception
         user_id = UUID(payload['sub'])
 
-    except (InvalidTokenError, ValueError, KeyError):
-        raise credentials_exception
+    except (InvalidTokenError, ValueError, KeyError) as err:
+        raise credentials_exception from err
 
     user = await UserRepository(session).get_by_id(user_id)
     if user is None:
@@ -158,7 +158,7 @@ def get_transaction_service(
         account_service=account_service,
         project_repo=ProjectRepository(session),
     )
-        
+
 TransactionServiceDep = Annotated[
     TransactionService,
     Depends(get_transaction_service),
@@ -174,7 +174,7 @@ def get_project_service(
         company_repo=CompanyRepository(session),
         company_service=company_service
     )
-        
+
 ProjectServiceDep = Annotated[
     ProjectService,
     Depends(get_project_service),
@@ -189,7 +189,7 @@ def get_report_service(
         report_repo=ReportRepository(session),
         company_service=company_service
     )
-        
+
 ReportServiceDep = Annotated[
     ReportService,
     Depends(get_report_service),
@@ -201,7 +201,7 @@ def get_subscription_service(session: SessionDep) -> SubscriptionService:
         session=session,
         subscription_repo=SubscriptionRepository(session),
     )
-        
+
 SubscriptionServiceDep = Annotated[
     SubscriptionService,
     Depends(get_subscription_service),

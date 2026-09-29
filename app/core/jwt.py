@@ -22,7 +22,7 @@ def create_access_token(user_id: UUID) -> str:
 
 
 def create_refresh_token(
-    user_id: UUID, 
+    user_id: UUID,
     token_id: UUID,
 ) -> tuple[str, datetime]:
     expired_at = datetime.now(UTC) \

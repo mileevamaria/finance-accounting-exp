@@ -1,5 +1,5 @@
 from decimal import Decimal
-from enum import Enum
+from enum import StrEnum
 from typing import TYPE_CHECKING
 from uuid import UUID
 
@@ -14,13 +14,13 @@ if TYPE_CHECKING:
     from app.models import Company, Transaction
 
 
-class AccountCurrency(str, Enum):
+class AccountCurrency(StrEnum):
     USD = 'usd'
     EUR = 'eur'
     RUB = 'rub'
 
 
-class AccountType(str, Enum):
+class AccountType(StrEnum):
     BANK = 'bank'
     CASH = 'cash'
 
@@ -41,10 +41,10 @@ class Account(Base, UUIDMixin):
     opening_balance: Mapped[Decimal] = mapped_column(
         Numeric(15, 2), default=Decimal('0.00'),
     )
-    
+
     company: Mapped['Company'] = relationship(
         back_populates='accounts',
-    ) 
+    )
 
     transactions: Mapped[list['Transaction']] = relationship(
         back_populates='account',

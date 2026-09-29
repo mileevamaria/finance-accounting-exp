@@ -96,7 +96,7 @@ async def update_group(
 
 
 @router.delete(
-    '/category-groups/{group_id}', 
+    '/category-groups/{group_id}',
     status_code=status.HTTP_204_NO_CONTENT,
 )
 async def delete_group(
@@ -186,7 +186,7 @@ async def update_category(
 
 
 @router.delete(
-    '/categories/{category_id}', 
+    '/categories/{category_id}',
     status_code=status.HTTP_204_NO_CONTENT,
 )
 async def delete_category(

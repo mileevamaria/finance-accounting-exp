@@ -12,7 +12,7 @@ class UserRepository(SoftDeletionMixin[User], BaseRepository[User]):
 
     async def get_by_email(self, email: str) -> User | None:
         query = select(User).where(
-            User.email == email, 
+            User.email == email,
             User.deleted_at.is_(None),
         )
         result = await self.session.execute(query)

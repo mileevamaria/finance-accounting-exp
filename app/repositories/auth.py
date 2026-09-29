@@ -11,7 +11,7 @@ from app.repositories.base import BaseRepository
 class TokenRepository(BaseRepository[Token]):
     def __init__(self, session: AsyncSession):
         super().__init__(session, Token)
-    
+
     async def get_active_by_id(self, obj_id: UUID) -> Token | None:
         query = select(Token).where(
             Token.id == obj_id,

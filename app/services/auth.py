@@ -29,7 +29,7 @@ InvalidTokenException = HTTPException(
 )
 
 class AuthService:
-    def __init__(self, 
+    def __init__(self,
         token_repo: TokenRepository,
         user_repo: UserRepository
     ):
@@ -68,7 +68,7 @@ class AuthService:
         return user, access_token, refresh_token
 
     async def refresh_token(
-        self, 
+        self,
         data: TokenRefresh,
     ) -> tuple[User, str, str]:
         payload = decode_token(data.refresh_token)
@@ -79,7 +79,7 @@ class AuthService:
         user = await self.user_repo.get_by_id(user_id)
         if user is None:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, 
+                status_code=status.HTTP_404_NOT_FOUND,
                 detail='User not found',
             )
 
@@ -93,7 +93,7 @@ class AuthService:
             stored.token_hash,
         ):
             raise InvalidTokenException
-        
+
         await self.token_repo.revoke(stored)
 
         token_id = uuid4()

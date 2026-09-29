@@ -99,4 +99,3 @@ async def test_cannot_access_foreign_category_group(
         headers=foreign_auth_headers,
     )
     assert response.status_code == 404
-    

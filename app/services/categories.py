@@ -85,14 +85,14 @@ class CategoryGroupService:
         return await self.group_repo.update(group)
 
     async def delete(
-        self, 
+        self,
         group_id: UUID,
         company_id: UUID,
         owner_id: UUID,
     ) -> None:
         group = await self.get(
             group_id=group_id,
-            company_id=company_id, 
+            company_id=company_id,
             owner_id=owner_id,
         )
         await self.group_repo.delete(group.id)
@@ -196,7 +196,7 @@ class CategoryService:
         return await self.category_repo.update(category)
 
     async def delete(
-        self, 
+        self,
         category_id: UUID,
         company_id: UUID,
         owner_id: UUID,

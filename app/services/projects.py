@@ -84,7 +84,7 @@ class ProjectService:
         return await self.project_repo.update(project)
 
     async def delete(
-        self, 
+        self,
         project_id: UUID,
         company_id: UUID,
         owner_id: UUID,

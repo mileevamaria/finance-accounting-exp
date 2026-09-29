@@ -151,7 +151,7 @@ class TransactionService:
         return await self.transaction_repo.update(transaction)
 
     async def delete(
-        self, 
+        self,
         transaction_id: UUID,
         account_id: UUID,
         company_id: UUID,

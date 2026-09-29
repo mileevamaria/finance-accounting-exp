@@ -1,6 +1,6 @@
 async def test_register_success(client, user_payload):
     response = await client.post(
-        '/users/', 
+        '/users/',
         json={
             **user_payload,
             'email': 'john@example.com',

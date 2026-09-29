@@ -20,7 +20,7 @@ class UserUpdate(BaseModel):
     email: EmailStr | None = None
     phone: str | None = None
 
-    
+
 class UserResponse(_UserBase):
     model_config = ConfigDict(from_attributes=True)
 

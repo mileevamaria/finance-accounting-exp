@@ -1,4 +1,3 @@
-from collections.abc import Sequence
 from decimal import Decimal
 from uuid import UUID
 

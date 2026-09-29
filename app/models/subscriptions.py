@@ -61,4 +61,3 @@ class Subscription(Base, UUIDMixin):
     )
 
     user: Mapped['User'] = relationship(back_populates='subscription')
-    

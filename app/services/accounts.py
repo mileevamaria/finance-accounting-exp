@@ -11,7 +11,7 @@ from app.services.companies import CompanyService
 
 class AccountService:
     def __init__(
-        self, 
+        self,
         account_repo: AccountRepository,
         company_repo: CompanyRepository,
         company_service: CompanyService
@@ -21,9 +21,9 @@ class AccountService:
         self.company_service = company_service
 
     async def create(
-        self, 
+        self,
         company_id: UUID,
-        owner_id: UUID, 
+        owner_id: UUID,
         data: AccountCreate,
     ) -> Account:
         await self.company_service.get_company_or_404(company_id, owner_id)
@@ -32,8 +32,8 @@ class AccountService:
         return await self.account_repo.create(account)
 
     async def get_all(
-        self, 
-        company_id: UUID, 
+        self,
+        company_id: UUID,
         owner_id: UUID,
     ) -> list[tuple[Account, Decimal]]:
         await self.company_service.get_company_or_404(company_id, owner_id)
@@ -41,9 +41,9 @@ class AccountService:
         return [(account, balance) for account, balance in accounts]
 
     async def get(
-        self, 
+        self,
         account_id: UUID,
-        company_id: UUID, 
+        company_id: UUID,
         owner_id: UUID,
     ) -> tuple[Account, Decimal]:
         await self.company_service.get_company_or_404(company_id, owner_id)
@@ -51,13 +51,13 @@ class AccountService:
         row = await self.account_repo.get_with_balance(account_id)
         if row is None:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, 
+                status_code=status.HTTP_404_NOT_FOUND,
                 detail='Account not found',
             )
         account, balance = row
         if account is None or account.company_id != company_id:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, 
+                status_code=status.HTTP_404_NOT_FOUND,
                 detail='Account not found',
             )
         return account, balance
@@ -74,14 +74,14 @@ class AccountService:
             company_id=company_id,
             account_id=account_id,
         )
-        
+
         account_data = data.model_dump(exclude_unset=True)
         for field, value in account_data.items():
             setattr(account, field, value)
         return await self.account_repo.update(account)
 
     async def delete(
-        self, 
+        self,
         account_id: UUID,
         company_id: UUID,
         owner_id: UUID,

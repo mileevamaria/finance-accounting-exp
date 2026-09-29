@@ -100,13 +100,13 @@ async def registered_foreign_user(client, foreign_user_payload):
     response = await client.post('/users/', json=foreign_user_payload)
     assert response.status_code == 200, response.json()
     return response.json()
-    
+
 
 @pytest_asyncio.fixture
 async def auth_headers(registered_user):
     token_header =  f'Bearer {registered_user['access_token']}'
     return {'Authorization': token_header}
-    
+
 
 @pytest_asyncio.fixture
 async def foreign_auth_headers(registered_foreign_user):
@@ -198,8 +198,8 @@ async def second_category_group(client, auth_headers, company):
 
 @pytest_asyncio.fixture
 async def foreign_category_group(
-    client, 
-    foreign_auth_headers, 
+    client,
+    foreign_auth_headers,
     foreign_company,
 ):
     response = await client.post(
@@ -229,9 +229,9 @@ async def category(client, auth_headers, company, category_group):
 
 @pytest_asyncio.fixture
 async def foreign_category(
-    client, 
-    foreign_auth_headers, 
-    foreign_company, 
+    client,
+    foreign_auth_headers,
+    foreign_company,
     foreign_category_group,
 ):
     response = await client.post(
