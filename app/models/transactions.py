@@ -3,7 +3,7 @@ from decimal import Decimal
 from typing import TYPE_CHECKING
 from uuid import UUID
 
-from sqlalchemy import ForeignKey, Index, Numeric, String
+from sqlalchemy import DateTime, ForeignKey, Index, Numeric, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
@@ -33,7 +33,7 @@ class Transaction(Base, UUIDMixin):
         ForeignKey('projects.id', ondelete='SET NULL'),
     )
     amount: Mapped[Decimal] = mapped_column(Numeric(15, 2))
-    occurred_at: Mapped[datetime]
+    occurred_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     description: Mapped[str | None] = mapped_column(String(500))
     counterparty: Mapped[str | None] = mapped_column(String(255))
 
