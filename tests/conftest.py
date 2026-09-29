@@ -1,8 +1,9 @@
 from collections.abc import AsyncGenerator
+from datetime import UTC, datetime, timedelta
 from uuid import uuid4
 
 import pytest_asyncio
-from httpx import ASGITransport, AsyncClient
+from httpx2 import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
     async_sessionmaker,
@@ -14,6 +15,11 @@ from app.core import settings
 from app.db import get_session
 from app.db.base import Base
 from app.main import app
+from app.models.subscriptions import (
+    Subscription,
+    SubscriptionPlan,
+    SubscriptionStatus,
+)
 
 engine = create_async_engine(
     settings.test_database_url,
@@ -255,3 +261,31 @@ async def transaction(client, auth_headers, company, account, category):
     )
     assert response.status_code == 200, response.text
     return response.json()
+
+
+@pytest_asyncio.fixture
+async def project(client, auth_headers, company):
+    response = await client.post(
+        f'/companies/{company["id"]}/projects',
+        headers=auth_headers,
+        json={
+            'name': 'Проект 1',
+            'description': 'Описание проекта',
+        },
+    )
+    assert response.status_code == 200, response.text
+    return response.json()
+
+
+@pytest_asyncio.fixture
+async def subscription(session, registered_user):
+    subscription = Subscription(
+        user_id=registered_user['user']['id'],
+        provider_payment_id=f'payment-{uuid4()}',
+        plan=SubscriptionPlan.PRO,
+        status=SubscriptionStatus.ACTIVE,
+        current_period_end=datetime.now(UTC) + timedelta(days=30),
+    )
+    session.add(subscription)
+    await session.commit()
+    return subscription
