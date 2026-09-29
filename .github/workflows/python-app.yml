@@ -44,7 +44,7 @@ jobs:
         run: make lint
 
       - name: Run tests with coverage
-        run: make test-coverage
+        run: make test-cov
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
           TEST_DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/finance_test
