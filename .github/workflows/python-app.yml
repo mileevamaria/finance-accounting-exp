@@ -54,7 +54,7 @@ jobs:
 
           DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/finance_test
           DEBUG: "false"
-          DUMMY_HASH: test-dummy-hash
+          DUMMY_HASH: $argon2id$v=19$m=65536,t=3,p=4$azNali8e7g+jj0Ecxt8CPg$buwh9p9FplclNYf8rc5DL2bxru3CIPXpmtdGATIPye8
 
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v7
